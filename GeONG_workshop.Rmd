@@ -1,32 +1,26 @@
 ---
-title: "GeONG"
+title: "GeOnG Workshop"
 author: "Linda Menk"
-date: "2022-09-23"
-output: rmdformats::material
+date: "2022-10-14"
+output: 
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+      number_sections: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## Tips  
 
-Click on a function and press F1 for help  
-Press Strg + Enter to run one line of code  
-Press Strg + Up arrow + Enter to run a code chunk
-Press Strg + Up arrow + C to comment out several lines  
-
-# Install packages
-knitr
-rmdformats
-
-# Load packages
-```{r load packages}
-
-# Installs all packages necessary for today
-#install.packages(c("malariaAtlas","rnaturalearth","wpgpDownloadR","sf","terra","raster","dplyr","remotes","RColorBrewer","tmap","knitr","rmarkdown)) # Took me about 50 secs
+# Malaria risk assessment for Burundi
 
 
-#remotes::install_github("wpgp/wpgpDownloadR")
+
+```{r loading libraries, echo = FALSE, message = FALSE}
 
 #Data access
 library(malariaAtlas) # Malaria Atlas Project
@@ -34,174 +28,171 @@ library(rnaturalearth) # NaturalEarth
 library(wpgpDownloadR) # Worldpop
 
 #Mapping
-library(tmap)
-library(RColorBrewer)
+library(tmap) # To create interactive maps easily
+library(RColorBrewer) # To access popular color palettes for our maps
 
 #Geoprocessing
-library(sf)
-library(terra)
-library(raster) #Elevation # Needed?
-library(dplyr)
+library(sf) # To work with spatial vector data
+library(terra) # To work with raster data
+library(raster) # To work with raster data (predecessor of terra)
+library(magrittr) # For data tidying and manupulation (not limited to spatial data)
+```
+# Part 1: Data access  
+
+For our malaria risk assessment, we will use data from the [Malaria Atlas Project](https://malariaatlas.org/) and [Worldpop](https://www.worldpop.org/). 
+
+
+## Administrative boundaries of our area of interest (AOI)
+```{r admin, message = FALSE}
+# Downloads the geometric shape of our AOI on admin 2 level from the Malaria Atlas Project. 
+AOI_shp <- malariaAtlas::getShp(ISO = "BDI", admin_level = "admin2")  
+
+# Creates a simple plot of the data that we have just downloaded
+plot(AOI_shp)
 
 ```
 
-# Access data
-## Administrative boundaries
-```{r admin}
 
-# Administrative boundaries of Burundi
-# BDI <- afriadmin::afriadmin(country = "Burundi", level = 2)
+## Malaria incidence  
 
-BDI_shp <- malariaAtlas::getShp(ISO = "BDI", admin_level = "admin2")  
+```{r malaria incidence, message = FALSE}
 
-plot(BDI_shp)
-
-#BDI_sf <- st_as_sf(BDI_shp)
-
-
-```
-
-## Malaria Atlas Project
-```{r malariaAtlas}
-
-# Downloads malaria indicator data
-BDI_Pf2020 <- getRaster(surface = "Plasmodium  falciparum Incidence version 2020", shp = BDI_shp)
+# Downloads malaria indicator data for our AOI from Malaria Atlas Project
+AOI_Pf2020 <- getRaster(surface = "Plasmodium  falciparum Incidence version 2020", shp = AOI_shp)
 
 # Makes a basic plot of the downloaded malaria indicator data.
-plot(BDI_Pf2020)
-
-# Downloads malaria indicator data
-BDI_access <- getRaster(surface = "Walking-only travel time to healthcare map without access to motorized transport", shp = BDI_shp)
-
-# Makes a basic plot of the downloaded accessibility indicator data
-plot(BDI_access)
+plot(AOI_Pf2020)
 
 ```
-# Worldpop
-```{r Worldpop}
 
-# Lists all datasets available for a selected country
-wpgpListCountryDatasets(ISO3="BDI")
+## Accessibility to healthcare services
+```{r access healthcare, message = FALSE}
 
-# Find out: What is the difference between the normal dataset, the UN adjusted dataset and the constrained/unconstrained dataset?
+# Downloads data for estimated walking time/minutes to the nearest healthcare facility for our AOI from Amalaria Atlas project
+AOI_access <- getRaster(surface = "Walking-only travel time to healthcare map without access to motorized transport", shp = AOI_shp)
 
-# Downloads the population indicator data (covariate) and saves it to disk
+# Makes a basic plot of the downloaded accessibility indicator data
+plot(AOI_access)
+
+```
+# Population statistics  
+This dataset was produced based on the 2020 population census/projection-based estimates for 2020.[More Info.](https://hub.worldpop.org/geodata/summary?id=49625)
+```{r Worldpop, message = FALSE, warning = FALSE}
+
+# Downloads the population data (covariate) and saves it to disk
 pop_path <- wpgpGetCountryDataset(ISO3 = "BDI",
                              covariate = "ppp_2020",
                              destDir = tempdir())
 
-# Uses the "raster" function to load the downloaded data from disk
+# Uses the "raster" function to load the downloaded data from disk into R
 pop <- raster(pop_path)
 
 # The downloaded data has a spatial resolution of 100m. For our analysis we do not need such fine data, it only slows our analysis down.
 # Therefore, we aggregate the data by the factor 10 to get a spatial resolution of 1km. 
-pop_agg <- aggregate(pop, fact = 10, fun = sum)
+AOI_pop <- aggregate(pop, fact = 10, fun = sum)
+
+# Clears the "pop" data from memory. We don't need it anymore as we continue working with the aggregated data.
+remove(pop)
 
 # Makes a basic plot of the population indicator data
-plot(pop_agg)
+plot(AOI_pop)
 
 ```
 
-```{r naturalearth}
-# Download lakes from Naturalearthdat
-# Optional
-world_lakes <- ne_download(scale = 10, type = 'lakes', category = 'physical')
-
-```
-
-# Manipulate data
-
-```{r pressure, echo=FALSE}
-
-# Define AOI
-# BDI is AOI
-
-# Crop layers to AOI
-# Function for crop
-cropAOI <- function(data){
-  st_as_sf(data) %>% 
-  st_make_valid() %>% 
-  st_crop(BDI_shp)
-}
-
-# To crop only the lakes in Burundi from the global lakes dataset
-BDI_lakes <- cropAOI(world_lakes)
-
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Part 2: Data manipulation and analysis 
+# Turn the raw data into indicators  
+```{r analysis, message = FALSE}
 #----------------
 # Analysis - Count Pop, Incidence, Avg. dist to healthcare per Admin area
 
 # Convert administrative borders to a sf object
-BDI_adm3 <- st_as_sf(BDI_shp)
+AOI_sf <- st_as_sf(AOI_shp)
 
 # Sums the population per district
-pop_sum <- terra::extract(pop_agg, BDI_adm3, fun = sum, ID = TRUE, na.rm = TRUE)
-pop_district <- cbind(pop_sum,BDI_adm3)
+pop_sum <- terra::extract(AOI_pop, AOI_sf, fun = sum, ID = TRUE, na.rm = TRUE) %>% 
+  round(digits =2)
+
+pop_district <- cbind(pop_sum,AOI_sf)
 
 # Mean plasmodium falciparum indicence per district
-PF20_mean <- terra::extract(BDI_Pf2020, BDI_adm3, fun = mean, ID = TRUE, na.rm = TRUE)
-Pf20_district <- cbind(PF20_mean,BDI_adm3)
+Pf20_mean <- terra::extract(AOI_Pf2020, AOI_sf, fun = mean, ID = TRUE, na.rm = TRUE) %>% 
+  round(digits = 2)
+
+Pf20_district <- cbind(Pf20_mean, AOI_sf)
 
 # Mean distance to the nearest healthcare facility per district
-access_mean <- terra::extract(BDI_access, BDI_adm3, fun = mean, ID = TRUE, na.rm = TRUE)
-access_district <- cbind(access_mean,BDI_adm3)
+access_mean <- terra::extract(AOI_access, AOI_sf, fun = mean, ID = TRUE, na.rm = TRUE) %>% 
+  round(digits = 2)
+
+access_district <- cbind(access_mean, AOI_sf)
+
 
 # Bind all the indicators to the same geospatial outlines
-BDI_district<-cbind(pop_district, Pf20_district, access_district)
+AOI_district <- cbind(pop_district, Pf20_district, access_district)
+
+# Removes the Lake Tanganyika district because it covers only lake areas.
+AOI_district <- AOI_district[!(AOI_district$name_2=="Lake Tanganyika"),]
+
+remove(pop_sum, Pf20_mean, access_mean)
 ```
-# Visualize
-```{r mapp}
-library(tmap)
-library(RColorBrewer)
+
+# Create composite indicator
+```{r created composite indicator, message = FALSE}
+
+# Perform min-max normalization on population indicator
+AOI_district$pop_norm <- (AOI_district$pop_sum - min(AOI_district$pop_sum))/(max(AOI_district$pop_sum) - min(AOI_district$pop_sum))
+
+# Perform min-max normalization on malaria incidence indicator
+AOI_district$pf_norm <- (AOI_district$Pf20_mean - min(AOI_district$Pf20_mean))/(max(AOI_district$Pf20_mean) - min(AOI_district$Pf20_mean))
+
+# Perform min-max normalization on accessibility indicator
+AOI_district$access_norm <- (AOI_district$access_mean - min(AOI_district$access_mean))/(max(AOI_district$access_mean) - min(AOI_district$access_mean))
+
+# Sum all three sub-indicators 
+AOI_district$composite_indicator <- (AOI_district$pop_norm + AOI_district$pf_norm + AOI_district$access_norm)/3  
+AOI_district$composite_indicator <- round(AOI_district$composite_indicator, digits = 2)
+
+```
+
+# Part 3: Visualizing results as maps
+```{r map, warning = FALSE, error = FALSE, message = FALSE, fig.height= 12}
 
 tmap_mode("view")
 
 pal <- c('#60b564','#fed400')
 
-x <- tm_shape(BDI_district) +
+pop <- tm_shape(AOI_district) +
   tm_polygons(col = "pop_sum", palette = pal, popup.vars = c("Pop"="pop_sum")) +
   tm_borders(lwd = 0.2) + 
-  tm_layout(title = "Burundi") + 
-  tm_shape(BDI_lakes) + 
+  tm_layout(title = "Total Population") + 
   tm_fill(col = '#BFE1F4') + 
   tm_borders(lwd = 1, col = "black") 
 
-y <- tm_shape(BDI_district) +
-  tm_polygons(col = "access_mean", palette = pal, popup.vars = c("Access"="access_mean")) +
+access <- tm_shape(AOI_district) +
+  tm_polygons(col = "access_mean", palette = pal, id = "name_2", popup.vars = c("Access"="access_mean")) +
   tm_borders(lwd = 0.2) + 
-  tm_shape(BDI_lakes) + 
+  tm_layout(title = "Healthcare accessibility") + 
+  tm_fill(col = '#BFE1F4') + 
+  tm_borders(lwd = 1, col = "black") 
+
+pf20 <- tm_shape(AOI_district) +
+  tm_polygons(col = "Pf20_mean", palette = pal, id = "name_2", popup.vars = c("Malaria incidence"="Pf20_mean")) +
+  tm_borders(lwd = 0.2) + 
+  tm_layout(title = "Malaria incidence") +
   tm_fill(col = '#BFE1F4') + 
   tm_borders(lwd = 1, col = "black")
-
-z <- tm_shape(BDI_district) +
-  tm_polygons(col = "PF20_mean", palette = pal, popup.vars = c("Malaria incidence"="PF20_mean")) +
-  tm_borders(lwd = 0.2) + 
-  tm_shape(BDI_lakes) + 
-  tm_fill(col = '#BFE1F4') + 
-  tm_borders(lwd = 1, col = "black")
-
-tmap_arrange(x,y,z)
-```
-```{r created composite indicator}
-
-# Perform min-max normalization on population indicator
-BDI_district$pop_norm <- (BDI_district$pop_sum - min(BDI_district$pop_sum))/(max(BDI_district$pop_sum) - min(BDI_district$pop_sum))
-
-# Perform min-max normalization on malaria incidence indicator
-BDI_district$pf_norm <- (BDI_district$PF20_mean - min(BDI_district$PF20_mean))/(max(BDI_district$PF20_mean) - min(BDI_district$PF20_mean))
-
-# Perform min-max normalization on accessibility indicator
-BDI_district$access_norm <- (BDI_district$access_mean - min(BDI_district$access_mean))/(max(BDI_district$access_mean) - min(BDI_district$access_mean))
-
-# Sum all three sub-indicators 
-BDI_district$composite_indicator <- (BDI_district$pop_norm + BDI_district$pf_norm + BDI_district$access_norm)/3
 
 # Visualize composite indicator as a map
-tm_shape(BDI_district) +
-  tm_polygons(col = "composite_indicator", palette = pal, popup.vars = c("Risk index"="composite_indicator")) +
+risk <- tm_shape(AOI_district) +
+  tm_polygons(col = "composite_indicator", palette = pal, id = "composite_indicator", popup.vars = c("Name" = "name_2", "Risk index"="composite_indicator", "Population" = "pop_norm", "Accessibility" = "access_norm", "Malaria indcidence" = "pf_norm")) +
   tm_borders(lwd = 0.2) + 
-  tm_layout(title = "Burundi") + 
-  tm_shape(BDI_lakes) + 
+  tm_layout(title = "Composite risk indicator") + 
   tm_fill(col = '#BFE1F4') + 
   tm_borders(lwd = 1, col = "black") 
+
+x <- list(pop, access, pf20, risk)
+
+tmap_arrange(x, sync = TRUE)
 
 ```
