@@ -60,15 +60,7 @@ Population counts 2000-2020; 2020; 1km & 100m resolution
 Population density  
 [Population weighted density](https://www.worldpop.org/methods/pwd)
 
-Access: [R-wpgpDownload](https://cran.r-project.org/web/packages/acled.api/index.html) 
-
-**[NASA Land Data Assimilation System (LDAS)](https://ldas.gsfc.nasa.gov/)**
- 
-Land Data Assimilation Systems (LDAS) aim to produce high quality fields of land surface states (e.g., soil moisture, temperature) and fluxes (e.g., evapotranspiration, runoff) by integrating satellite- and ground-based observational data products, using advanced land surface modeling and data assimilation techniques.
-
-The Hydrological Sciences Laboratory at NASA's Goddard Space Flight Center has been developing multiple LDAS and distributing LDAS output for more than two decades.  
-
-Access: [R-nasaAcess](https://github.com/nasa/NASAaccess)  
+Access: [R-wpgpDownload](https://github.com/wpgp/wpgpDownloadR) 
 
 **[Malaria Atlas Project](https://malariaatlas.org/)**  
 The Malaria Atlas Project (MAP) is a network of researchers (from public health to mathematics, geography, and epidemiology). MAP assembles global databases on malaria risk and intervention coverage and develops innovative analysis methods that use those data to address critical questions. These include better understanding the global landscape of malaria risk, how this is changing, and the impact of malaria interventions. By evaluating burden, trends, and impact at fine geographical scale we support informed decision making for malaria control at international, regional and national scales.
@@ -114,22 +106,18 @@ Estimating rainfall variations in space and time is a key aspect of drought earl
 
 Early research focused on combining models of terrain-induced precipitation enhancement with interpolated station data. More recently, new resources of satellite observations like gridded satellite-based precipitation estimates from NASA and NOAA have been leveraged to build high resolution (0.05°) gridded precipitation climatologies. When applied to satellite-based precipitation fields, these improved climatologies can remove systematic bias—a key technique in the production of the 1981 to near-present CHIRPS data set. The creation of CHIRPS has supported drought monitoring efforts by the USAID Famine Early Warning Systems Network (FEWS NET).
 
-Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 35+ year quasi-global rainfall data set. Spanning 50°S-50°N (and all longitudes) and ranging from 1981 to near-present, CHIRPS incorporates our in-house climatology, CHPclim, 0.05° resolution satellite imagery, and in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.
+Climate Hazards Group InfraRed Precipitation with Station data (CHIRPS) is a 35+ year quasi-global rainfall data set. Spanning 50°S-50°N (and all longitudes) and ranging from 1981 to near-present, CHIRPS incorporates our in-house climatology, CHPclim, 0.05° resolution satellite imagery, and in-situ station data to create gridded rainfall time series for trend analysis and seasonal drought monitoring.  
 
 Access: [R-chirps](https://cran.r-project.org/web/packages/chirps/index.html)  
 
-**[WHO Health Facility database](https://www.nature.com/articles/s41597-019-0142-2)**  
-Hallo Jonathan, ich habe mir die Health Facilities in Tanzania nochmal genauer angeguckt. Für euren Fall würde ich empfehlen bei den MoH Daten zu bleiben. Die beiden anderen Quellen die ich mir noch angeguckt habe sind "The Global Healthsites Mapping Project" (healthsites.io) and the "Collated SSA facility database from WHO-KWTRP" (in dem Nature paper beschrieben, das ich dir letzte Woche geschickt habe). Die healthsites.io Daten scheinen keinen besonderen Qualitätssicherungsprozess zu durchlaufen und es sind viele Punkte z.B. als Krankenhaus eingetragen, die gar keine sind (soweit ich das durch ein Gegenchecken mit Google Maps/Streetview beurteilen kann). Die WHO-KWTRP Datenbank benutzt die Daten des MoH, allerdings konnte ich die Originaldaten noch nicht lokalisieren, da die Links im Paper mittlerweile veraltet sind. Ich kann auf die Daten zwar mittels dem R-package afrihealthsites zugreifen, allerdings sagen die Autoren des packages, dass sie die Daten einmal 2018/2019 als Excel Tabelle runtergeladen haben und seitdem nicht mehr aktualisiert haben. D.h. das package bietet die gleichen Daten an wie das MoH, aber halt auf dem Stand von 2018 oder 2019. Ich kann mir zwar nicht vorstellen, dass die WHO-KWTRP Daten einfach weg sind, aber finden konnte ich sie halt leider auch noch nicht. Es würde sich aber wahrscheinlich lohnen, da in das Zusammenstellen dieser Datenbank extrem viel Arbeit geflossen ist und sie eben die Health Facilities für ganz Sub-Sahara Afrika gebündelt drin hat. Mal sehen, vielleicht taucht sie ja noch auf.  
+**[WHO Health Facility database](https://www.nature.com/articles/s41597-019-0142-2) and [Healthsites.io](https://healthsites.io/)**  
 
-Access: [R-Afrihealthsites](https://github.com/afrimapr/afrihealthsites)
-
-**[Halthsites.io](https://healthsites.io/)**    
 The Global Healthsites Mapping Project is an initiative to create an online map of every health facility in the world and make the details of each location easily accessible.  
 Through collaborations with users, trusted partners and OpenStreetMap we will capture and validate the location and contact details of every facility and make this data freely available under an Open Data License (ODBL)'  
 Accessible
-We will make the data accessible over the Internet through an API and other formats such as GeoJSON, Shapefile, KML, CSV
+We will make the data accessible over the Internet through an API and other formats such as GeoJSON, Shapefile, KML, CSV  
 
-Access: [R-Afrihealthsites](https://github.com/afrimapr/afrihealthsites)
+Access: [R-Afrihealthsites](https://github.com/afrimapr/afrihealthsites)  
 
 **[Mapme-Biodiversity](https://mapme-initiative.github.io/mapme.biodiversity/index.html)**  
 
