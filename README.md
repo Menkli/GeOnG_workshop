@@ -23,6 +23,8 @@ If you have no experience with R and RStudio at all, you might want to watch [th
 - How to access data from HDX: [Tutorial](https://humanitarian-user-group.github.io/post/rhdx_demo/)  
 - How to access [Web Feature Services via R](https://inbo.github.io/tutorials/tutorials/spatial_wfs_services/) using to access for example the [Common Operational datasets](https://cod.unocha.org/) (COD by OCHA)   
 - [Humanitarian Data Science with R](https://www.rstudio.com/resources/rstudioglobal-2021/humanitarian-data-science-with-r/)
+- Comprehensive tutorial for the use of [terra and raster](https://rspatial.org/)  
+- Comprehensive tutorial for the use of [sf - Simple features](https://cran.r-project.org/web/packages/sf/vignettes/sf1.html)  
 
 # R packages to explore  
 **[Worldpop](https://www.worldpop.org/)**  
