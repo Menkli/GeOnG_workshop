@@ -21,32 +21,9 @@ If you have no experience with R and RStudio at all, you might want to watch [th
 # Sites to explore  
 - Examples of maps that you can do with R: [30daymapchallenge on Twitter](https://twitter.com/search?q=%2330daymapchallenge%20%23r&src=typed_query)  
 - How to access data from HDX: [Tutorial](https://humanitarian-user-group.github.io/post/rhdx_demo/)  
+- How to access [Web Feature Services via R](https://inbo.github.io/tutorials/tutorials/spatial_wfs_services/) using to access for example the [Common Operational datasets](https://cod.unocha.org/) (COD by OCHA)   
 
 # R packages to explore  
-
-## Data harvesting 
-
-Accessibility  
-Administrative boundaries  
-Population statistics and demographics  
-Migration  
-Conflict  
-Climate and weather  
-Physical environment  
-Built environment    
-Health  
- 
-
-### Curated data offered by renommated humanitarian organization  
-[Common Operational datasets](https://cod.unocha.org/) (COD by OCHA)  
-[Fundamantal operational datasets](https://theartofservice.com/fundamental-operational-datasets-what-do-we-stand-for-and-what-are-we-against.html) (Outdated)   
-
-[Malaria data sources](https://docs.google.com/spreadsheets/d/14P56ZZwEqfIq8B8WkjUWMdwA0KllYNkJr0CAD2tsF48/edit?usp=sharing)
-
-[CMIP5 Data access (WMS etc)](http://tds.gisclimatechange.ucar.edu/thredds/catalog/multimodel/monthly/files/catalog.html)
-
-There are an abundance of geospatial data available freely and easily accessible. Aim of RAII is to access and curate this data for humanitarian purposes, such as (indicator-based) malaria risk assessments, vulnerability assessments, climate change risk and vulnerability assessments, etc. The following paragraphs give an overview of some of the most important datasources.
-
 **[Worldpop](https://www.worldpop.org/)**  
 An understanding of the numbers, characteristics and locations of human populations underpins operational work, policy analyises and scientific development globally across multiple sectors. However, traditional population data sources are often outdated, have low granularity and are updated on the scale of decades. New data sources and recent methodological advances made by the WorldPop program now provide high resolution, open and contemporary data on human population distributions, allowing accurate measurement of local population distributions, compositions, characteristics, growth and dynamics, across national and regional scales.    
 
