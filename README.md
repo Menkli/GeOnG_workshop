@@ -22,6 +22,7 @@ If you have no experience with R and RStudio at all, you might want to watch [th
 - Examples of maps that you can do with R: [30daymapchallenge on Twitter](https://twitter.com/search?q=%2330daymapchallenge%20%23r&src=typed_query)  
 - How to access data from HDX: [Tutorial](https://humanitarian-user-group.github.io/post/rhdx_demo/)  
 - How to access [Web Feature Services via R](https://inbo.github.io/tutorials/tutorials/spatial_wfs_services/) using to access for example the [Common Operational datasets](https://cod.unocha.org/) (COD by OCHA)   
+- [Humanitarian Data Science with R](https://www.rstudio.com/resources/rstudioglobal-2021/humanitarian-data-science-with-r/)
 
 # R packages to explore  
 **[Worldpop](https://www.worldpop.org/)**  
@@ -99,6 +100,7 @@ MAP collaborates with WHO on the estimation of malaria programme coverage and di
 * Zoonotic Malaria
 
 Access: [R-malariaAtlas](https://cran.r-project.org/web/packages/malariaAtlas/index.html)  
+Tutorial: [R-malariaAtlas](https://cran.r-project.org/web/packages/malariaAtlas/vignettes/overview.html)  
 
 **[ACLED](https://acleddata.com/#/dashboard)**  
 The Armed Conflict Location & Event Data Project (ACLED) is a disaggregated data collection, analysis, and crisis mapping project. ACLED collects the dates, actors, locations, fatalities, and types of all reported political violence and protest events around the world. The ACLED team conducts analysis to describe, explore, and test conflict scenarios, and makes both data and analysis open for free use by the public.  
